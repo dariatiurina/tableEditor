@@ -1,0 +1,49 @@
+-- Jednoduchý tabulkový editor
+
+1.	Tabulkový editor musí implementovat následující funkcionality:
+2.	Práce s čísly a řetězci (příp. další typy dle vašeho uvážení).
+3.	Základní číselné operace: sčítání, odčítání, násobení, dělení.
+4.	Základní operace nad řetězci: spojení dvou řetězců, opakování řetězce.
+5.	Alespoň 3 jednoduché funkce (př. sin, abs, pad, regex, …).
+6.	Vypsat tabulku a její hodnoty a vzorce.
+7.	Uložení tabulky (tedy jejích buněk) do souboru v čitelné podobě. Stejně tak je potom možné tento stav ze souboru obnovit. (A to včetně definovaných vzorců.)
+8.	Buňky v sobě mohou mít uloženou hodnotu nebo vzorec, v případě vzorce musí aktualizovat svůj obsah na základě změn v odkazovaných buňkách. Stejně tak program musí detekovat cykly a nesmí dovolit vytvořit výraz, který by cyklus způsobil.
+
+
+-- Specifikace
+Potřebuji implementovat několik základních věcí:
+1.	Sama tabulka, kam lze dodávat nové buňky s jejich obsahem, a editor bude si řešit, jaký formát mají.
+2.	Buňky mohou být třech typu: řetězci, čísla a vzorce.
+3.	Export a import tabulky ve vnější soubor s názvem, který uvede uživatel.
+4.	Vypsání tabulky a případně její vzorců. Také lze vypsat jen 1 buňku nebo řadu, kterou vybere uživatel.
+5.	Lze smazat data z buněk, řady nebo smazat celou tabulku, na výběru uživatele.
+6.	Lze kopírovat data s jedné buňky v jinou (případně i vzorce).
+7.	Vzorce musí automaticky se aktualizovat při změně data ve zdrojových buňkách.
+
+Celé rozhrání uděleno c konzole. Uživatel pracuje s editorem pomocí příkazu. Editor přijímá příkaze v jakémkoliv registru, ale když příkaz není validní (nemá ho v konfiguračním soubore), tak vypíše chybovou hlásku a bude očekávat nový příkaz. Editor skončí po příkazu „exit“.
+Příkazy, které editor ví:
+1.	Print (případně print all, print [číslo buňky, řada buněk]).
+2.	Delete (případně print all, print [číslo buňky, řada buněk]).
+3.	[číslo buňky] = data (obyčejný řetězec, který automaticky uzná svůj typ) nebo (již existující buňka, která něco v sobě má).
+4.	Import nebo Export (případně název souboru, automaticky název je „table.csv“).
+5.	Exit.
+6.	Pomocné slovo formula, pomocí něj lze vypsat tabulky se vzorci nebo nastavit u tabulky vzorec.
+
+Vzorce jsou implementovány pomocí základních operaci a závorek, který budou libovolně vnořeny. Editor bude automaticky detekovat typ buňky a zpracovávat operaci podle toho.
+
+-- Polymorfismus
+Polymorfismus v této úloze je implementován v buňkách a jejich typů.
+Vektor ukazatelů v jedné řádce ukazuje na dynamické alokované buňky, které mají různé typy.
+Ta pomůcka existuje pro to, aby různé typy buňky různými funkcí byly implementovány ve vzorcích a v vypisování tabulky do konzole.
+
+Implementace:
+Class Cell = parent class
+StringCell = odvozené od Cell
+NumCell = odvozené od Cell
+CellFunc = odvozené od Cell	
+
+Cell má virtuální metody, které pak jsou override v odvozených classech.
+Cell má viruální destruktor, virtuální metodu void print(std::ostream &os) a virtualní metodu size_t getLenth(), virtualní metodu getFormula(), virtualní metodu printFunc() a viruální metody setInside() a whatIs().
+Všechny metody jsou implementovány pak v odvozených classech, kromě getFormula() a setInside(), které jsou override pouze v classe CellFunc.
+
+Aby zjednodušili implementaci, potřebujeme použit polymorfismus, který nám v tom pomůže. Podrobněji diagramu polymorfismusu lze najít v dokumentaci.

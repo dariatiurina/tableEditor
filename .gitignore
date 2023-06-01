@@ -1,0 +1,8 @@
+.idea/
+/src/*/*.out
+/src/*/*.o
+/build
+tiuridar
+prohlaseni.txt
+.vscode/
+/doc
